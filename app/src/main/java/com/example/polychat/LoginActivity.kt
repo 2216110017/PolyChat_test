@@ -31,12 +31,24 @@ class LoginActivity : AppCompatActivity() {
             val stuName = stuNameEditText.text.toString()
 
             if (isValidLogin(stuNum, stuName)) {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                showError("Invalid login credentials")
+                val user = getUsersFromJson().firstOrNull { it.stuNum == stuNum && it.stuName == stuName }
+                user?.let {
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("userID", it.userID)
+                    intent.putExtra("stuNum", it.stuNum)
+                    intent.putExtra("stuName", it.stuName)
+                    intent.putExtra("department", it.department)
+                    startActivity(intent)
+                    finish()
+                } ?: showError("Invalid login credentials")
             }
+//            if (isValidLogin(stuNum, stuName)) {
+//                val intent = Intent(this, MainActivity::class.java)
+//                startActivity(intent)
+//                finish()
+//            } else {
+//                showError("Invalid login credentials")
+//            }
         }
     }
 
@@ -44,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Notice")
         builder.setMessage("이 앱은 졸업작품용으로 제작된 한국폴리텍대학 부산캠퍼스 채팅앱입니다." +
-                "개인정보를 포함하는 기능(로그인, 채팅, 게시판)이 있기 때문에 거절하면 앱이 종료됩니다." +
+                "개인정보를 포함하는 기능(로그인, 채팅, 게시판)이 있기 때문에 거절시 앱이 종료됩니다." +
                 "사용하는 개인정보 : 이름, 학번, 학과, 이메일, 전화번호" +
                 "사용하는 권한 : 파일에 접근(채팅 내 파일 첨부용)")
         builder.setPositiveButton("수락") { _, _ -> }

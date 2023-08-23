@@ -8,16 +8,16 @@ import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 
-class StudentListActivity : AppCompatActivity() {
+class ChatListActivity : AppCompatActivity() {
 
-    private lateinit var studentsListView: ListView
+    private lateinit var ChatListActivity: ListView
     private lateinit var groupChatButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_student_list)
+        setContentView(R.layout.activity_chat_list)
 
-        studentsListView = findViewById(R.id.studentsListView)
+        ChatListActivity = findViewById(R.id.ChatListActivity)
         groupChatButton = findViewById(R.id.groupChatButton)
 
         groupChatButton.setOnClickListener {
@@ -25,8 +25,8 @@ class StudentListActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        studentsListView.setOnItemClickListener { _, _, position, _ ->
-            // TODO: Navigate to IndividualChatActivity
+        ChatListActivity.setOnItemClickListener { _, _, position, _ ->
+            // TODO: Navigate to DirectChatActivity
         }
     }
 

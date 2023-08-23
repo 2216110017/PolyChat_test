@@ -10,28 +10,36 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var profileNameTextView: TextView
-    private lateinit var profileStuNumTextView: TextView
-    private lateinit var profileDepartmentTextView: TextView
+    private lateinit var stuNameTextView: TextView
+    private lateinit var stuNumTextView: TextView
+    private lateinit var departmentTextView: TextView
     private lateinit var boardButton: Button
-    private lateinit var studentsButton: Button
+    private lateinit var chatListButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        profileNameTextView = findViewById(R.id.profileNameTextView)
-        profileStuNumTextView = findViewById(R.id.profileStuNumTextView)
-        profileDepartmentTextView = findViewById(R.id.profileDepartmentTextView)
+        stuNameTextView = findViewById(R.id.stuNameTextView)
+        stuNumTextView = findViewById(R.id.stuNumTextView)
+        departmentTextView = findViewById(R.id.departmentTextView)
         boardButton = findViewById(R.id.boardButton)
-        studentsButton = findViewById(R.id.studentsButton)
+        chatListButton = findViewById(R.id.chatListButton)
+
+        val stuNum = intent.getStringExtra("stuNum")
+        val stuName = intent.getStringExtra("stuName")
+        val department = intent.getStringExtra("department")
+
+        stuNameTextView.text = stuName
+        stuNumTextView.text = stuNum
+        departmentTextView.text = department
 
         boardButton.setOnClickListener {
             val intent = Intent(this, BoardActivity::class.java)
             startActivity(intent)
         }
 
-        studentsButton.setOnClickListener {
+        chatListButton.setOnClickListener {
             val intent = Intent(this, ChatListActivity::class.java)
             startActivity(intent)
         }

@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 
-class IndividualChatActivity : AppCompatActivity() {
+class DirectChatActivity : AppCompatActivity() {
 
     private lateinit var chatListView: ListView
     private lateinit var messageEditText: EditText
@@ -18,7 +18,7 @@ class IndividualChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_individual_chat)
+        setContentView(R.layout.activity_direct_chat)
 
         chatListView = findViewById(R.id.chatListView)
         messageEditText = findViewById(R.id.messageEditText)
