@@ -79,18 +79,20 @@ class PostActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.logout -> {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent) // 로그아웃 후 LopginActivity로 ㅇ ㅣ동
-                return true
+                true
             }
+
             R.id.settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
