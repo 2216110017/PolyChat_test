@@ -1,12 +1,12 @@
 package com.example.polychat
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Intent
+import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,6 +53,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent) // 로그아웃 후 LopginActivity로 ㅇ ㅣ동
                 return true
             }
             R.id.settings -> {

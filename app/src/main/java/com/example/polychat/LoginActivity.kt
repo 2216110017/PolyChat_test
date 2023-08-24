@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONArray
 import java.io.IOException
 import java.nio.charset.Charset
@@ -16,6 +18,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var stuNameEditText: EditText
     private lateinit var loginButton: Button
 
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -23,6 +29,7 @@ class LoginActivity : AppCompatActivity() {
         stuNumEditText = findViewById(R.id.stuNumEditText)
         stuNameEditText = findViewById(R.id.stuNameEditText)
         loginButton = findViewById(R.id.loginButton)
+
 
         showPopupMessage()
 
@@ -33,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
             if (isValidLogin(stuNum, stuName)) {
                 val user = getUsersFromJson().firstOrNull { it.stuNum == stuNum && it.stuName == stuName }
                 user?.let {
+                    saveUserInfoToFirebase(it.userID, it.stuNum, it.stuName, it.department, it.email, it.phone) // 로그인 성공 시 사용자 정보 Firebase에 저장
                     val intent = Intent(this, MainActivity::class.java)
                     intent.putExtra("userID", it.userID)
                     intent.putExtra("stuNum", it.stuNum)
@@ -40,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
                     intent.putExtra("department", it.department)
                     startActivity(intent)
                     finish()
-                } ?: showError("Invalid login credentials")
+                } ?: showError("로그인 자격 증명이 실패")
             }
 //            if (isValidLogin(stuNum, stuName)) {
 //                val intent = Intent(this, MainActivity::class.java)
@@ -51,7 +59,32 @@ class LoginActivity : AppCompatActivity() {
 //            }
         }
     }
+    // LoginActivity.kt에서 로그인 성공 후 Firebase Realtime Database에 사용자 정보 저장
+    private fun saveUserInfoToFirebase(userID: String, stuNum: String, stuName: String, department: String, email: String, phone: String) {
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("users") // "users" 노드에 사용자 정보 저장
 
+        // 사용자 정보를 Map 형태로 생성
+        val userMap = mapOf(
+            "userID" to userID,
+            "stuNum" to stuNum,
+            "stuName" to stuName,
+            "department" to department,
+            "email" to email,
+            "phone" to phone
+        )
+
+        // 사용자 정보를 Firebase Realtime Database에 저장
+        usersRef.child(userID.toString()).setValue(userMap)
+            .addOnSuccessListener {
+                showToast("사용자 정보가 저장되었습니다.")
+                // 저장 성공 시 처리
+            }
+            .addOnFailureListener {
+                showToast("사용자 정보 저장에 실패했습니다.")
+                // 저장 실패 시 처리
+            }
+    }
     private fun showPopupMessage() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Notice")
@@ -82,7 +115,7 @@ class LoginActivity : AppCompatActivity() {
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
                 val user = User(
-                    jsonObject.getInt("userID"),
+                    jsonObject.getString("userID"),
                     jsonObject.getString("stuNum"),
                     jsonObject.getString("stuName"),
                     jsonObject.getString("department"),
@@ -105,12 +138,3 @@ class LoginActivity : AppCompatActivity() {
         builder.show()
     }
 }
-
-data class User(
-    val userID: Int,
-    val stuNum: String,
-    val stuName: String,
-    val department: String,
-    val email: String,
-    val phone: String
-)

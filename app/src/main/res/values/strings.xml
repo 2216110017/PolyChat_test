@@ -4,4 +4,6 @@
     <string name="login_stuNum_hint">학번</string>
     <string name="login_stuName_hint">이름</string>
     <string name="login_Login_button">로그인</string>
+    <string name="menu_logout">로그아웃</string>
+    <string name="menu_settings">설정</string>
 </resources>
