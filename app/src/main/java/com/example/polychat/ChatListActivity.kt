@@ -9,6 +9,10 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class ChatListActivity : AppCompatActivity() {
 
@@ -27,13 +31,32 @@ class ChatListActivity : AppCompatActivity() {
             currentUser = intent.getParcelableExtra("currentUser",User::class.java)!!
         }
 
+        // Firebase에서 채팅 목록 가져오기
+        val chatsRef = FirebaseDatabase.getInstance().getReference("chats")
+        val chatList = mutableListOf<String>()
+
+        chatsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                chatList.clear()
+                for (chatSnapshot in dataSnapshot.children) {
+                    val chat = chatSnapshot.getValue(String::class.java)
+                    chat?.let { chatList.add(it) }
+                }
+                val adapter = ArrayAdapter(this@ChatListActivity, R.layout.list_item_chat, R.id.chatNameTextView, chatList)
+                chatListView.adapter = adapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 에러 처리
+            }
+        })
+
+
         groupChatButton.setOnClickListener {
             val intent = Intent(this, GroupChatActivity::class.java)
             startActivity(intent)
         }
 
-        // Dummy data for chat list
-        val chatList = mutableListOf<String>("User 1", "User 2", "User 3")
         val adapter = ArrayAdapter(this, R.layout.list_item_chat, R.id.chatNameTextView, chatList)
         chatListView.adapter = adapter
 
