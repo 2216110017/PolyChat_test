@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.polychat"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.polychat"
-        minSdk = 16
-        targetSdk = 33
+        minSdk = 19
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 

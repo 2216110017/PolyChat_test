@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+
+
 class PostActivity : AppCompatActivity() {
 
     private lateinit var titleEditText: EditText
@@ -37,11 +39,6 @@ class PostActivity : AppCompatActivity() {
 
             // Firebase에 게시물 저장
             savePostToFirebase(title, content, isNotice)
-
-            // 게시물 작성 후 BoardActivity로 이동
-            val intent = Intent(this, BoardActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 
@@ -59,19 +56,31 @@ class PostActivity : AppCompatActivity() {
             postsRef.child(postId).setValue(post)
                 .addOnSuccessListener {
                     showToast("게시물이 저장되었습니다.")
-                    // 저장 성공 시 처리
+                    // 게시물 저장 성공 후 BoardActivity로 이동
+                    val intent = Intent(this, BoardActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
                 .addOnFailureListener {
                     showToast("게시물 저장에 실패했습니다.")
-                    // 저장 실패 시 처리
                 }
         }
     }
 
     private fun getCurrentUser(): String {
         val currentUser = FirebaseAuth.getInstance().currentUser
-        return currentUser?.displayName ?: "Unknown"
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            val database = FirebaseDatabase.getInstance()
+            val userRef = database.getReference("users/$userId/stuName") // "path_to_users"는 실제 경로로 변경해야 합니다.
+
+            val stuName = userRef.get().result?.getValue(String::class.java)
+            return stuName ?: "Unknown"
+        }
+        return "Unknown"
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)

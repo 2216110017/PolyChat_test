@@ -7,8 +7,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ListView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class BoardActivity : AppCompatActivity() {
 
@@ -18,10 +23,6 @@ class BoardActivity : AppCompatActivity() {
     private lateinit var postsList: MutableList<Post>
     private lateinit var currentUser: User
 
-    companion object {
-        private const val POST_ACTIVITY_REQUEST_CODE = 1
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
@@ -29,16 +30,29 @@ class BoardActivity : AppCompatActivity() {
         postsListView = findViewById(R.id.postsListView)
         writePostButton = findViewById(R.id.writePostButton)
 
-        // 게시글 목록 초기화
-        postsList = mutableListOf(
-            Post("", "제목1", "내용1", "작성자1", System.currentTimeMillis()),
-            Post("", "제목2", "내용2", "작성자2", System.currentTimeMillis())
-            // 원하는 만큼 게시글 추가
-        )
+        // Firebase에서 게시글 목록 가져오기
+        val postsRef = FirebaseDatabase.getInstance().getReference("posts")
+        postsList = mutableListOf()  //게시글 목록 초기화
+
+        postsRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                postsList.clear()
+                for (postSnapshot in dataSnapshot.children) {
+                    val post = postSnapshot.getValue(Post::class.java)
+                    post?.let { postsList.add(it) }
+                }
+                val postAdapter = PostAdapter(this@BoardActivity, postsList)
+                postsListView.adapter = postAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // 에러 처리
+            }
+        })
 
         writePostButton.setOnClickListener {
             val intent = Intent(this, PostActivity::class.java)
-            startActivityForResult(intent, POST_ACTIVITY_REQUEST_CODE)
+            resultLauncher.launch(intent)
         }
 
         postsListView.setOnItemClickListener { _, _, position, _ ->
@@ -53,11 +67,6 @@ class BoardActivity : AppCompatActivity() {
         val postAdapter = PostAdapter(this, postsList)
         postsListView.adapter = postAdapter
 
-//        writePostButton.setOnClickListener {
-//            val intent = Intent(this, PostActivity::class.java)
-//            startActivity(intent)
-//        }
-
         postsListView.setOnItemClickListener { _, _, position, _ ->
             val selectedPost = postsList[position]
             val postRef = FirebaseDatabase.getInstance().getReference("posts/${selectedPost.postId}")
@@ -67,27 +76,24 @@ class BoardActivity : AppCompatActivity() {
         }
 
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == POST_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
             val title = data?.getStringExtra("postTitle")
             val content = data?.getStringExtra("postContent")
             val author = currentUser.stuName // 현재 사용자의 이름을 가져옴
             val timestamp = System.currentTimeMillis()
-//            val post = Post(postsList.size + 1, title, content, author, System.currentTimeMillis())
-//            postsList.add(post)
-//            postAdapter.notifyDataSetChanged() // 새로운 게시글을 추가하여 갱신
+
             // Firebase Realtime Database에 게시글 저장
             val database = FirebaseDatabase.getInstance()
             val postsRef = database.getReference("posts")
             val newPostRef = postsRef.push() // 새로운 게시글을 위한 참조 생성
             val newPost = Post(newPostRef.key!!, title!!, content!!, author, timestamp)
             newPostRef.setValue(newPost) // Firebase Realtime Database에 게시글 저장
+
             // 게시글 목록에 추가하여 갱신
             postsList.add(newPost)
             postAdapter.notifyDataSetChanged()
-
         }
     }
 

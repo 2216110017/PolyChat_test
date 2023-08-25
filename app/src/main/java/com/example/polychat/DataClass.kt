@@ -45,3 +45,11 @@ data class User(
     }
 }
 data class ChatMessage(val senderName: String, val messageText: String, val timestamp: Long)
+
+data class Post(
+    val postId: String = "",
+    val title: String = "",
+    val content: String = "",
+    val author: String = "",
+    val timestamp: Long = 0L
+)
