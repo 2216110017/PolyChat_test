@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
+
+
 class PostActivity : AppCompatActivity() {
 
     private lateinit var titleEditText: EditText
@@ -67,8 +69,18 @@ class PostActivity : AppCompatActivity() {
 
     private fun getCurrentUser(): String {
         val currentUser = FirebaseAuth.getInstance().currentUser
-        return currentUser?.displayName ?: "Unknown"
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            val database = FirebaseDatabase.getInstance()
+            val userRef = database.getReference("users/$userId/stuName") // "path_to_users"는 실제 경로로 변경해야 합니다.
+
+            val stuName = userRef.get().result?.getValue(String::class.java)
+            return stuName ?: "Unknown"
+        }
+        return "Unknown"
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
