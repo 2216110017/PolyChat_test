@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         val stuNum = intent.getStringExtra("stuNum")
         val stuName = intent.getStringExtra("stuName")
         val department = intent.getStringExtra("department")
+        val userID = intent.getStringExtra("userID")
 
         stuNameTextView.text = stuName
         stuNumTextView.text = stuNum
@@ -36,11 +37,13 @@ class MainActivity : AppCompatActivity() {
 
         boardButton.setOnClickListener {
             val intent = Intent(this, BoardActivity::class.java)
+            intent.putExtra("userID", userID)
             startActivity(intent)
         }
 
         chatListButton.setOnClickListener {
             val intent = Intent(this, ChatListActivity::class.java)
+            intent.putExtra("userID", userID)
             startActivity(intent)
         }
     }

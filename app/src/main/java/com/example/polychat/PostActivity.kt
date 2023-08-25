@@ -9,7 +9,6 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 
@@ -44,16 +43,17 @@ class PostActivity : AppCompatActivity() {
 
     private fun savePostToFirebase(title: String, content: String, isNotice: Boolean) {
         val database = FirebaseDatabase.getInstance()
-        val postsRef = database.getReference("posts") // "posts" 노드에 게시물 저장
+        val currentUserID = getCurrentUserId() // 현재 사용자의 userID를 가져옴
+        val userPostsRef = database.getReference("users/$currentUserID/posts") // 사용자별 게시물 저장 경로
 
-        val postId = postsRef.push().key // 게시물의 고유 ID 생성
+        val postId = userPostsRef.push().key // 게시물의 고유 ID 생성
 
         if (postId != null) {
             val timestamp = System.currentTimeMillis() // 현재 시간 정보
-            val post = Post(postId, title, content, getCurrentUser(), timestamp)
+            val post = Post(postId, title, content, currentUserID, timestamp) // 'author' 대신 'currentUserID' 사용
 
             // 게시물 정보를 Firebase Realtime Database에 저장
-            postsRef.child(postId).setValue(post)
+            userPostsRef.child(postId).setValue(post)
                 .addOnSuccessListener {
                     showToast("게시물이 저장되었습니다.")
                     // 게시물 저장 성공 후 BoardActivity로 이동
@@ -67,18 +67,11 @@ class PostActivity : AppCompatActivity() {
         }
     }
 
-    private fun getCurrentUser(): String {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        val userId = currentUser?.uid
 
-        if (userId != null) {
-            val database = FirebaseDatabase.getInstance()
-            val userRef = database.getReference("users/$userId/stuName") // "path_to_users"는 실제 경로로 변경해야 합니다.
+    private fun getCurrentUserId(): String {
+        val userID = intent.getStringExtra("userID")
 
-            val stuName = userRef.get().result?.getValue(String::class.java)
-            return stuName ?: "Unknown"
-        }
-        return "Unknown"
+        return userID ?: "Unknown"
     }
 
 
