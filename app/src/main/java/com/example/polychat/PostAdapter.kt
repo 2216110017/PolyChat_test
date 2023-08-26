@@ -20,7 +20,7 @@ class PostAdapter(context: Context, posts: List<Post>) : ArrayAdapter<Post>(cont
         val authorTextView: TextView = itemView.findViewById(R.id.authorTextView)
 
         titleTextView.text = post?.title
-        authorTextView.text = post?.author
+        authorTextView.text = post?.stuName
 
         return itemView
     }

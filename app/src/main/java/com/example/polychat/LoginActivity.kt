@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
             val stuNum = stuNumEditText.text.toString()
             val stuName = stuNameEditText.text.toString()
 
+
             if (isValidLogin(stuNum, stuName)) {
                 val user = getUsersFromJson().firstOrNull { it.stuNum == stuNum && it.stuName == stuName }
                 user?.let {
@@ -46,17 +47,11 @@ class LoginActivity : AppCompatActivity() {
                     intent.putExtra("stuNum", it.stuNum)
                     intent.putExtra("stuName", it.stuName)
                     intent.putExtra("department", it.department)
+
                     startActivity(intent)
                     finish()
                 } ?: showError("로그인 자격 증명이 실패")
             }
-//            if (isValidLogin(stuNum, stuName)) {
-//                val intent = Intent(this, MainActivity::class.java)
-//                startActivity(intent)
-//                finish()
-//            } else {
-//                showError("Invalid login credentials")
-//            }
         }
     }
     // LoginActivity.kt에서 로그인 성공 후 Firebase Realtime Database에 사용자 정보 저장

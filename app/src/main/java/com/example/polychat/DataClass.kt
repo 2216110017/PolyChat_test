@@ -50,6 +50,6 @@ data class Post(
     val postId: String = "",
     val title: String = "",
     val content: String = "",
-    val author: String = "",
+    val stuName: String = "",
     val timestamp: Long = 0L
 )
