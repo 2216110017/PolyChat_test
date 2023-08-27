@@ -4,45 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvPostTitle"
-        android:layout_width="0dp"
+    <CheckBox
+        android:id="@+id/checkBoxNotice"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="제목"
-        android:textSize="24sp"
-        android:layout_marginTop="20dp"
+        android:text="공지사항"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/tvPostContent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="내용"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/tvPostTitle"
-        app:layout_constraintBottom_toTopOf="@id/btnEditPost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginStart="20dp" />
 
-    <Button
-        android:id="@+id/btnEditPost"
+    <EditText
+        android:id="@+id/editTextTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="수정"
-        app:layout_constraintBottom_toTopOf="@id/btnDeletePost"
+        android:hint="제목"
+        app:layout_constraintTop_toBottomOf="@id/checkBoxNotice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:id="@+id/editTextContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="내용"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/editTextTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnPost"
+        android:layout_margin="20dp" />
 
     <Button
-        android:id="@+id/btnDeletePost"
+        android:id="@+id/btnPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="삭제"
+        android:text="작성"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
