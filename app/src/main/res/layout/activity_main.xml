@@ -1,97 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    tools:context=".MainActivity">
 
-    <!-- User Profile Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvProfileInfo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="이름:"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:id="@+id/stuNameTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="이름 예시"
-                android:textSize="20sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="학번:"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:id="@+id/stuNumTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="학번 예시"
-                android:textSize="20sp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="학과:"
-                android:textSize="20sp"/>
-
-            <TextView
-                android:id="@+id/departmentTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="학과 예시"
-                android:textSize="20sp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Buttons Section -->
-    <Button
-        android:id="@+id/boardButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="학과게시판"
-        android:textSize="30sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginTop="50dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="이름: \n학번: \n학과: "
+        />
 
     <Button
-        android:id="@+id/chatListButton"
-        android:layout_width="match_parent"
+        android:id="@+id/btnBoard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="학과소속 학생 목록"
-        android:textSize="30sp"/>
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/tvProfileInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="학과게시판" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/btn_Chat"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="채팅" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
