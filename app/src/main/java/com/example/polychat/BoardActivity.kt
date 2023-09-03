@@ -22,6 +22,12 @@ class BoardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_board)
 
+        //뒤로 버튼
+        val btnBack = findViewById<Button>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()  // 현재 액티비티를 종료하고 이전 액티비티로 돌아갑니다.
+        }
+
         // 로그인한 사용자의 ID 가져오기
         val userID = intent.getIntExtra("userID", -1)
 

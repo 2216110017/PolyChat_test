@@ -26,6 +26,12 @@ class GroupChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_group_chat)
 
+        //뒤로 버튼
+        val btnBack = findViewById<Button>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()  // 현재 액티비티를 종료하고 이전 액티비티로 돌아갑니다.
+        }
+
         // Firebase 데이터베이스 초기화
         database = FirebaseDatabase.getInstance().getReference("users/group_chat")
 
@@ -35,9 +41,6 @@ class GroupChatActivity : AppCompatActivity() {
         } else {
             intent.getSerializableExtra("profile") as? LoginActivity.LoginData
         }!!
-
-
-
 
         // 메시지 리스트 및 어댑터 초기화
         messagesList = ArrayList()
@@ -83,71 +86,3 @@ data class Message(
     val messageText: String,
     val timestamp: Long
 )
-
-
-
-//class GroupChatActivity : AppCompatActivity() {
-//
-//    data class Message(val senderName: String, val messageText: String)
-//
-//    private lateinit var database: FirebaseDatabase
-//    private lateinit var groupChatRef: DatabaseReference
-//    private lateinit var messageList: ArrayList<Message>
-//    private lateinit var adapter: GroupChatAdapter
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_group_chat)
-//
-//        val listViewMessages = findViewById<ListView>(R.id.listViewMessages)
-//        val editTextMessage = findViewById<EditText>(R.id.editTextMessage)
-//        val btnSend = findViewById<Button>(R.id.btnSend)
-//
-//        messageList = ArrayList()
-//        adapter = GroupChatAdapter(this, messageList)
-//        listViewMessages.adapter = adapter
-//
-//        database = FirebaseDatabase.getInstance()
-//        groupChatRef = database.getReference("group_chat")
-//
-//        // 단체 채팅 메시지를 가져와서 화면에 표시합니다.
-//        groupChatRef.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                messageList.clear()
-//                for (messageSnapshot in dataSnapshot.children) {
-//                    val message = messageSnapshot.getValue(Message::class.java)
-//                    if (message != null) {
-//                        messageList.add(message)
-//                    }
-//                }
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//            override fun onCancelled(databaseError: DatabaseError) {
-//                Toast.makeText(this@GroupChatActivity, "데이터 로드 실패: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//
-//        // 메시지 보내기 버튼의 클릭 이벤트 처리
-//        btnSend.setOnClickListener {
-//            val messageText = editTextMessage.text.toString().trim()
-//            if (messageText.isNotEmpty()) {
-//                val senderName = intent.getStringExtra("userName") ?: "Unknown" // 로그인한 사용자 이름
-//                val message = Message(senderName, messageText)
-//                groupChatRef.push().setValue(message).addOnCompleteListener { task ->
-//                    if (task.isSuccessful) {
-//                        editTextMessage.text.clear()
-//                    } else {
-//                        Toast.makeText(this, "메시지 전송 실패.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//data class Message(
-//    val senderName: String,
-//    val messageText: String,
-//    val timestamp: Long
-//)

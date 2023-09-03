@@ -28,7 +28,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="보내기"
+        app:layout_constraintStart_toEndOf="@+id/editTextMessage"
+        app:layout_constraintEnd_toStartOf="@+id/btnBack"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로"
+        app:layout_constraintStart_toEndOf="@+id/btnSend"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

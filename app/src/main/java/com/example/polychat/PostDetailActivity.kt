@@ -1,5 +1,6 @@
 package com.example.polychat
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -20,6 +21,13 @@ class PostDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_detail)
+
+        //뒤로 버튼
+        val btnBack = findViewById<Button>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            UnsavedCheckBack()
+        }
+
 
         // 사용자 ID와 게시글 ID를 가져오기
         val userID = intent.getIntExtra("userID", -1)
@@ -70,4 +78,24 @@ class PostDetailActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun UnsavedCheckBack() {
+        val tvPostContent = findViewById<TextView>(R.id.tvPostContent)
+        if (tvPostContent.text.isNotEmpty()) { // 작성 중인 내용이 있는지 확인
+            AlertDialog.Builder(this)
+                .setTitle("경고")
+                .setMessage("작성중인 게시물은 저장되지 않습니다. 정말 뒤로 가시겠습니까?")
+                .setPositiveButton("확인") { _, _ ->
+                    finish() // 현재 화면을 종료하고 이전 액티비티로 이동
+                }
+                .setNegativeButton("취소") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        } else {
+            finish() // 작성 중인 내용이 없으면 바로 이전 액티비티로 이동
+        }
+    }
+
 }
