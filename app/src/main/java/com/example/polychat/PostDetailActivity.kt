@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -80,8 +81,8 @@ class PostDetailActivity : AppCompatActivity() {
     }
 
     private fun UnsavedCheckBack() {
-        val tvPostContent = findViewById<TextView>(R.id.tvPostContent)
-        if (tvPostContent.text.isNotEmpty()) { // 작성 중인 내용이 있는지 확인
+        val editTextContent = findViewById<EditText>(R.id.editTextContent)
+        if (editTextContent.text.isNotEmpty()) { // 작성 중인 내용이 있는지 확인
             AlertDialog.Builder(this)
                 .setTitle("경고")
                 .setMessage("작성중인 게시물은 저장되지 않습니다. 정말 뒤로 가시겠습니까?")
