@@ -23,6 +23,12 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+        //뒤로 버튼
+        val btnBack = findViewById<Button>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()  // 현재 액티비티를 종료하고 이전 액티비티로 돌아갑니다.
+        }
+
         val listViewUsers = findViewById<ListView>(R.id.listViewUsers)
         val btnGroupChat = findViewById<Button>(R.id.btnGroupChat)
 

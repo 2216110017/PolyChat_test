@@ -21,22 +21,13 @@
             android:name=".SingleChatActivity"
             android:exported="false" />
         <activity
+            android:name=".SingleChatAdapter"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
             android:exported="false" />
         <activity
             android:name=".WritePostActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PostAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".DirectChatActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ChatListActivity"
             android:exported="false" />
         <activity
             android:name=".GroupChatActivity"
