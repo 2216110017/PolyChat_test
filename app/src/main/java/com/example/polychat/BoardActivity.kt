@@ -1,10 +1,15 @@
 package com.example.polychat
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ListView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -53,18 +58,37 @@ class BoardActivity : AppCompatActivity() {
         // Firebase에서 게시글 목록 가져오기
         postsRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val postsList = mutableListOf<String>()
+                val noticePostsList = mutableListOf<String>()
+                val normalPostsList = mutableListOf<String>()
                 postKeys.clear() // 리스트 초기화
 
                 // 각 게시글에 대해
                 for (postSnapshot in dataSnapshot.children) {
                     val post = postSnapshot.getValue(WritePostActivity.Post::class.java)
-                    postsList.add(post?.title ?: "No title")
+                    if (post?.notice == true) {
+                        noticePostsList.add(post.title ?: "No title")
+                    } else {
+                        normalPostsList.add(post?.title ?: "No title")
+                    }
                     postKeys.add(postSnapshot.key ?: "") // 게시글의 unique key 추가
                 }
 
+                val mergedPostsList = noticePostsList + normalPostsList
                 // 게시글 목록을 화면에 표시하기 위한 ArrayAdapter 설정
-                val adapter = ArrayAdapter(this@BoardActivity, android.R.layout.simple_list_item_1, postsList)
+                val adapter = object : ArrayAdapter<String>(this@BoardActivity, android.R.layout.simple_list_item_1, mergedPostsList) {
+                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val view = super.getView(position, convertView, parent)
+                        val textView = view.findViewById<TextView>(android.R.id.text1)
+                        if (position < noticePostsList.size) {
+                            textView.setTypeface(textView.typeface, Typeface.BOLD)
+                            textView.setBackgroundColor(Color.LTGRAY)
+                        } else {
+                            textView.setTypeface(null, Typeface.NORMAL)
+                            textView.setBackgroundColor(Color.TRANSPARENT)
+                        }
+                        return view
+                    }
+                }
                 listViewPosts.adapter = adapter
             }
 
@@ -82,6 +106,3 @@ class BoardActivity : AppCompatActivity() {
         }
     }
 }
-
-
-
