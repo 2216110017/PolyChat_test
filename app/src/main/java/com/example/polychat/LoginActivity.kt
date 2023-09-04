@@ -18,13 +18,14 @@ import java.io.Serializable
 class LoginActivity : AppCompatActivity() {
 
     data class LoginData(
-        val userID: Int,
-        val stuNum: String,
-        val stuName: String,
-        val department: String,
-        val email: String,
-        val phone: String
+        val userID: Int = 0,
+        val stuNum: String = "",
+        val stuName: String = "",
+        val department: String = "",
+        val email: String = "",
+        val phone: String = ""
     ) : Serializable
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

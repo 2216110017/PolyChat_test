@@ -24,38 +24,42 @@ class SingleChatActivity : AppCompatActivity() {
         val timestamp: Long
     )
 
-    // Firebase 데이터베이스 참조 및 필요한 변수들 선언
+    // Firebase 데이터베이스 관련 변수 선언
     private lateinit var database: DatabaseReference
     private lateinit var messagesAdapter: ArrayAdapter<String>
     private lateinit var messagesList: ArrayList<String>
-    private lateinit var loggedInUser: LoginActivity.LoginData
-    private lateinit var chatPartner: LoginActivity.LoginData // 채팅 상대 정보
+//    private lateinit var loggedInUser: LoginActivity.LoginData
+    private lateinit var chatPartner: LoginActivity.LoginData  // 채팅 상대 정보
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_chat)
 
-        //뒤로 버튼
+        // 뒤로 가기 버튼 설정
         val btnBack = findViewById<Button>(R.id.btnBack)
         btnBack.setOnClickListener {
-            finish()  // 현재 액티비티를 종료하고 이전 액티비티로 돌아갑니다.
+            finish()
         }
 
-        // Firebase 데이터베이스 초기화
-        database = FirebaseDatabase.getInstance().getReference("users/single_chat")
+        val userID = intent.getIntExtra("userID", -1)
 
-        // 현재 로그인한 사용자와 정보 가져옴
-        loggedInUser = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getSerializableExtra("profile", LoginActivity.LoginData::class.java)
-        } else {
-            intent.getSerializableExtra("profile") as? LoginActivity.LoginData
-        }!!
-        // 상대방 정보 가져옴
+        // 로그인한 사용자와 채팅 상대 정보 가져오기
+//        loggedInUser = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            intent.getSerializableExtra("profile", LoginActivity.LoginData::class.java)
+//        } else {
+//            intent.getSerializableExtra("profile") as? LoginActivity.LoginData
+//        }!!
+
         chatPartner = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("chatPartner", LoginActivity.LoginData::class.java)
         } else {
             intent.getSerializableExtra("chatPartner") as? LoginActivity.LoginData
         }!!
+
+        // Firebase 데이터베이스 초기화
+        val database = FirebaseDatabase.getInstance()
+        val messageRef = database.getReference("users").child(userID.toString()).child("messages").child("singlechat")
+//        val messageRef = database.getReference("users").child(loggedInUser.userID.toString()).child("messages").child("singlechat")
 
         // 메시지 리스트와 어댑터 초기화
         messagesList = ArrayList()
@@ -64,14 +68,19 @@ class SingleChatActivity : AppCompatActivity() {
         listViewMessages.adapter = messagesAdapter
 
         // 두 사용자 간의 고유한 채팅 ID 생성
-        val chatID = if (loggedInUser.userID < chatPartner.userID) {
-            "${loggedInUser.userID}_${chatPartner.userID}"
+//        val chatID = if (loggedInUser.userID < chatPartner.userID) {
+//            "${loggedInUser.userID}_${chatPartner.userID}"
+//        } else {
+//            "${chatPartner.userID}_${loggedInUser.userID}"
+//        }
+        val chatID = if (userID < chatPartner.userID) {
+            "${userID}_${chatPartner.userID}"
         } else {
-            "${chatPartner.userID}_${loggedInUser.userID}"
+            "${chatPartner.userID}_${userID}"
         }
 
         // Firebase에서 해당 채팅 ID에 대한 메시지를 실시간으로 가져와 ListView에 표시
-        database.child(chatID).addValueEventListener(object : ValueEventListener {
+        messageRef.child(chatID).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 messagesList.clear()
                 for (messageSnapshot in dataSnapshot.children) {
@@ -82,7 +91,7 @@ class SingleChatActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                // 오류 처리
+                // 에러 처리
                 Toast.makeText(this@SingleChatActivity, "오류: ${databaseError.message}", Toast.LENGTH_SHORT).show()
             }
         })
@@ -94,9 +103,15 @@ class SingleChatActivity : AppCompatActivity() {
         btnSend.setOnClickListener {
             val messageText = editTextMessage.text.toString().trim()
             if (messageText.isNotEmpty()) {
-                // 메시지 객체 생성 및 Firebase 데이터베이스에 저장
-                val message = Message(loggedInUser.userID, chatPartner.userID, messageText, System.currentTimeMillis())
-                database.child(chatID).push().setValue(message)
+                // 메시지 객체 생성, Firebase에 저장
+                val messageMap = HashMap<String, Any>()
+                messageMap["text"] = messageText
+                messageMap["timestamp"] = System.currentTimeMillis()
+                messageMap["senderID"] = userID
+//                messageMap["senderID"] = loggedInUser.userID
+                messageMap["receiverID"] = chatPartner.userID
+
+                messageRef.child(chatID).push().setValue(messageMap)
                 editTextMessage.text.clear()
             }
         }

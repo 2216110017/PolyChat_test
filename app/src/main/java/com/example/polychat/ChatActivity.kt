@@ -29,6 +29,7 @@ class ChatActivity : AppCompatActivity() {
             finish()  // 현재 액티비티를 종료하고 이전 액티비티로 돌아갑니다.
         }
 
+        val userID = intent.getIntExtra("userID", -1)
         val listViewUsers = findViewById<ListView>(R.id.listViewUsers)
         val btnGroupChat = findViewById<Button>(R.id.btnGroupChat)
 
@@ -62,6 +63,7 @@ class ChatActivity : AppCompatActivity() {
         listViewUsers.setOnItemClickListener { _, _, position, _ ->
             val selectedUser = userList[position]
             val intent = Intent(this@ChatActivity, SingleChatActivity::class.java)
+            intent.putExtra("userID", userID)
             intent.putExtra("selectedUser", selectedUser)
             startActivity(intent)
         }
@@ -69,6 +71,7 @@ class ChatActivity : AppCompatActivity() {
         // 단체 채팅 화면으로 이동합니다.
         btnGroupChat.setOnClickListener {
             val intent = Intent(this@ChatActivity, GroupChatActivity::class.java)
+            intent.putExtra("userID", userID)
             startActivity(intent)
         }
     }
